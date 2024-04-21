@@ -8,20 +8,21 @@
 mesh_t mesh_new(usz dim_x, usz dim_y, usz dim_z, mesh_kind_t kind) {
     usz const ghost_size = 2 * STENCIL_ORDER;
 
-    cell_t*** cells = malloc((dim_x + ghost_size) * sizeof(cell_t));
-    if (NULL != cells) {
+    cell_t*** cells = malloc((dim_x + ghost_size) * sizeof(cell_t**));
+    if (NULL == cells) {
         error("failed to allocate dimension X of mesh of size %zu bytes", dim_x + ghost_size);
     }
 
     for (usz i = 0; i < dim_x + ghost_size; ++i) {
-        cells[i] = malloc((dim_y + ghost_size) * sizeof(cell_t));
+        cells[i] = malloc((dim_y + ghost_size) * sizeof(cell_t*));
         if (NULL == cells[i]) {
             error("failed to allocate dimension Y of mesh of size %zu bytes", dim_y + ghost_size);
         }
 
         for (usz j = 0; j < dim_y + ghost_size; ++j) {
             cells[i][j] = NULL /*malloc((dim_z + ghost_size) * sizeof(cell_t))*/;
-            if (NULL != cells[i][j]) {
+            cells[i][j] = malloc((dim_z + ghost_size) * sizeof(cell_t));
+            if (NULL == cells[i][j]) {
                 error(
                     "failed to allocate dimension Z of mesh of size %zu bytes", dim_z + ghost_size
                 );
