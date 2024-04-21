@@ -10,8 +10,10 @@ endif()
 
 find_package(MPI REQUIRED)
 
+include_directories(${MPI_INCLUDE_PATH})
 add_subdirectory(src)
-
+ 
 add_executable(top-stencil src/main.c)
 target_include_directories(top-stencil PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include)
+target_link_libraries(top-stencil PRIVATE ${MPI_C_LIBRARIES})
 target_link_libraries(top-stencil PRIVATE stencil::stencil stencil::utils)
