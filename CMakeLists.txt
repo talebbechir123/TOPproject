@@ -4,8 +4,10 @@ project(top-stencil LANGUAGES C DESCRIPTION "3D stencil with MPI")
 set(CMAKE_COLOR_DIAGNOSTICS ON)
 set(CMAKE_C_STANDARD 17)
 
+
+
 if(CMAKE_BUILD_TYPE EQUAL Debug)
-    add_compile_options(-Wall)
+    add_compile_options(-Wall -O3 -g -funroll-loops)
 endif()
 
 find_package(MPI REQUIRED)
