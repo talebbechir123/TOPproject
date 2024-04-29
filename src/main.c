@@ -135,11 +135,11 @@ i32 main(i32 argc, char* argv[argc + 1]) {
             fprintf(stderr, "Iteration #%2zu/%2zu\r", it + 1, cfg.niter);
         }
 #endif
-
+    
         chrono_start(&chrono);
         // Compute Jacobi C=B@A (one iteration)
-        solve_jacobi(&A, &B, &C);
-        //solve_jacobi_CB(&A, &B, &C);
+        //solve_jacobi(&A, &B, &C);
+        solve_jacobi_CB(&A, &B, &C);
 
         // Exchange ghost cells for A and C meshes
         // No need to exchange B as its a constant mesh

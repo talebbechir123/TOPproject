@@ -5,7 +5,7 @@ set(CMAKE_COLOR_DIAGNOSTICS ON)
 set(CMAKE_C_STANDARD 17)
 
 
-
+add_compile_options(-Wall -O3 -g -funroll-loops)
 if(CMAKE_BUILD_TYPE EQUAL Debug)
     add_compile_options(-Wall -O3 -g -funroll-loops)
 endif()
