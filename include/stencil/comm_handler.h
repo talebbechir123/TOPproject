@@ -4,7 +4,6 @@
 #include "types.h"
 
 #include <mpi.h>
-
 /// Enum for communication kind (either a send or a receive operation).
 typedef enum comm_kind_e {
     COMM_KIND_SEND_OP,

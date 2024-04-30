@@ -1,54 +1,36 @@
 #include "stencil/mesh.h"
-
 #include "logging.h"
-
 #include <assert.h>
 #include <stdlib.h>
 
 mesh_t mesh_new(usz dim_x, usz dim_y, usz dim_z, mesh_kind_t kind) {
     usz const ghost_size = 2 * STENCIL_ORDER;
 
-    cell_t*** cells = malloc((dim_x + ghost_size) * sizeof(cell_t**));
-    if (NULL == cells) {
-        error("failed to allocate dimension X of mesh of size %zu bytes", dim_x + ghost_size);
+    f64* values = malloc((dim_x + ghost_size) * (dim_y + ghost_size) * (dim_z + ghost_size) * sizeof(f64));
+    if (values == NULL) {
+        error("failed to allocate memory for values of mesh of size %zu bytes", (dim_x + ghost_size) * (dim_y + ghost_size) * (dim_z + ghost_size) * sizeof(f64));
+        exit(EXIT_FAILURE);
     }
 
-    for (usz i = 0; i < dim_x + ghost_size; ++i) {
-        cells[i] = malloc((dim_y + ghost_size) * sizeof(cell_t*));
-        if (NULL == cells[i]) {
-            error("failed to allocate dimension Y of mesh of size %zu bytes", dim_y + ghost_size);
-        }
-
-        for (usz j = 0; j < dim_y + ghost_size; ++j) {
-            cells[i][j] = NULL /*malloc((dim_z + ghost_size) * sizeof(cell_t))*/;
-            cells[i][j] = malloc((dim_z + ghost_size) * sizeof(cell_t));
-            if (NULL == cells[i][j]) {
-                error(
-                    "failed to allocate dimension Z of mesh of size %zu bytes", dim_z + ghost_size
-                );
-            }
-        }
+    cell_kind_t* kinds = malloc((dim_x + ghost_size) * (dim_y + ghost_size) * (dim_z + ghost_size) * sizeof(cell_kind_t));
+    if (kinds == NULL) {
+        error("failed to allocate memory for kinds of mesh of size %zu bytes", (dim_x + ghost_size) * (dim_y + ghost_size) * (dim_z + ghost_size) * sizeof(cell_kind_t));
+        free(values);
+        exit(EXIT_FAILURE);
     }
 
     return (mesh_t){
         .dim_x = dim_x + ghost_size,
         .dim_y = dim_y + ghost_size,
         .dim_z = dim_z + ghost_size,
-        .cells = cells,
+        .cells = {.values = values, .kinds = kinds}, // Corrected initialization
         .kind = kind,
     };
 }
 
 void mesh_drop(mesh_t* self) {
-    if (NULL != self->cells) {
-        for (usz i = 0; i < self->dim_x; ++i) {
-            for (usz j = 0; j < self->dim_y; ++j) {
-                free(self->cells[i][j]);
-            }
-            free(self->cells[i]);
-        }
-        free(self->cells);
-    }
+    free(self->cells.values);
+    free(self->cells.kinds);
 }
 
 static char const* mesh_kind_as_str(mesh_t const* self) {
@@ -77,8 +59,8 @@ void mesh_print(mesh_t const* self, char const* name) {
             for (usz k = 0; k < self->dim_z; ++k) {
                 printf(
                     "%s%6.3lf%s ",
-                    CELL_KIND_CORE == self->cells[i][j][k].kind ? "\x1b[1m" : "",
-                    self->cells[i][j][k].value,
+                    mesh_set_cell_kind(self, i, j, k) == CELL_KIND_CORE ? "\x1b[1m" : "",
+                    self->cells.values[i * self->dim_y * self->dim_z + j * self->dim_z + k],
                     "\x1b[0m"
                 );
             }
@@ -107,9 +89,8 @@ void mesh_copy_core(mesh_t* dst, mesh_t const* src) {
     for (usz k = STENCIL_ORDER; k < dst->dim_z - STENCIL_ORDER; ++k) {
         for (usz j = STENCIL_ORDER; j < dst->dim_y - STENCIL_ORDER; ++j) {
             for (usz i = STENCIL_ORDER; i < dst->dim_x - STENCIL_ORDER; ++i) {
-                assert(dst->cells[i][j][k].kind == CELL_KIND_CORE);
-                assert(src->cells[i][j][k].kind == CELL_KIND_CORE);
-                dst->cells[i][j][k].value = src->cells[i][j][k].value;
+                usz idx = i * dst->dim_y * dst->dim_z + j * dst->dim_z + k;
+                dst->cells.values[idx] = src->cells.values[idx];
             }
         }
     }

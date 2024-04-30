@@ -26,3 +26,11 @@ optimizastion done so far .
 +2.106274827102639  0.000000000     2978.892 100 100 100
 +2.188698441105965  0.000000000     2978.267 100 100 100
 +2.547775111105633  0.000000000     2979.795 100 100 100
+
+
+
+//
+changed mesh structure from SOA to AOS got these results :
+
+
+//implemted blocking in solve jacobi got these results :
