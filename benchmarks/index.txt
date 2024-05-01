@@ -1,0 +1,16 @@
+optimization 
+
+
+Optimized 1 - removed the sleep function 
+
+
+Optimized 2-  precompute inv pow
+
+
+Optimized 3 - specific pow implementation
+
+
+Optimised 4- cache blocking
+
+
+Optimised 5 - chaging mesh from AOS to SOA

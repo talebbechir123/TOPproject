@@ -32,7 +32,7 @@ void solve_jacobi(mesh_t* A, mesh_t const* B, mesh_t* C) {
     // Precompute 1/pow(17.0, (f64)o) for each value of o
     f64 inverse_pow[STENCIL_ORDER];
     for (usz o = 1; o <= STENCIL_ORDER; ++o) {
-        inverse_pow[o - 1] = 1.0 / dpow(17.0, (f64)o);
+        inverse_pow[o - 1] = 1.0 / pow(17.0, (f64)o);
     }
 
     // Main loop
@@ -76,7 +76,7 @@ void solve_jacobi_CB(mesh_t* A, mesh_t const* B, mesh_t* C) {
     // Precompute 1/pow(17.0, (f64)o) for each value of o
     f64 inverse_pow[STENCIL_ORDER];
     for (usz o = 1; o <= STENCIL_ORDER; ++o) {
-        inverse_pow[o - 1] = 1.0 / dpow(17.0, (f64)o);
+        inverse_pow[o - 1] = 1.0 / pow(17.0, (f64)o);
     }
 
     // Main loop with cache line blocking
