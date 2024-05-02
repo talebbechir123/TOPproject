@@ -246,6 +246,7 @@ void comm_handler_ghost_exchange(comm_handler_t const* self, mesh_t* mesh) {
     // Back to front phase
     ghost_exchange_front_back(self, mesh, COMM_KIND_SEND_OP, self->id_front, STENCIL_ORDER);
     ghost_exchange_front_back(self, mesh, COMM_KIND_RECV_OP, self->id_back, mesh->dim_z - STENCIL_ORDER);
+    MPI_Barrier(MPI_COMM_WORLD);
 
     // Need to synchronize all remaining in-flight communications before exiting
     // MPI_Syncall(MPI_COMM_WORLD);

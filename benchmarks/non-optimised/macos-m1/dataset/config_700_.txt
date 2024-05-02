@@ -1,0 +1,4 @@
+dim_x = 700
+dim_y = 700
+dim_z = 700
+niter = 10
