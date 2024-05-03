@@ -123,7 +123,8 @@ i32 main(i32 argc, char* argv[argc + 1]) {
     comm_handler_ghost_exchange(&comm_handler, &A);
     comm_handler_ghost_exchange(&comm_handler, &B);
     comm_handler_ghost_exchange(&comm_handler, &C);
-
+   
+    
     chrono_t chrono;
 #ifndef NDEBUG
     if (rank == 0) {
@@ -146,6 +147,7 @@ i32 main(i32 argc, char* argv[argc + 1]) {
         // No need to exchange B as its a constant mesh
         comm_handler_ghost_exchange(&comm_handler, &A);
         comm_handler_ghost_exchange(&comm_handler, &C);
+        
         chrono_stop(&chrono);
 
         duration_t elapsed = chrono_elapsed(chrono);

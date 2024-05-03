@@ -1,0 +1,4 @@
+dim_x = 300
+dim_y = 300
+dim_z = 300
+niter = 10
