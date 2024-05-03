@@ -139,7 +139,8 @@ i32 main(i32 argc, char* argv[argc + 1]) {
         chrono_start(&chrono);
         // Compute Jacobi C=B@A (one iteration)
         //solve_jacobi(&A, &B, &C);
-        solve_jacobi_CB(&A, &B, &C);
+       solve_jacobi_CB(&A, &B, &C);
+       //solve_jacobi_original(&A, &B, &C);
 
         // Exchange ghost cells for A and C meshes
         // No need to exchange B as its a constant mesh

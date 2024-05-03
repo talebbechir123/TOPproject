@@ -1,0 +1,16 @@
+Performance counter stats for './top-stencil':
+
+          2 033,56 msec task-clock                #    0,133 CPUs utilized          
+             1 061      context-switches          #  521,746 /sec                   
+                22      cpu-migrations            #   10,818 /sec                   
+            24 517      page-faults               #   12,056 K/sec                  
+     5 996 649 764      cycles                    #    2,949 GHz                    
+     5 440 935 795      instructions              #    0,91  insn per cycle         
+       635 330 557      branches                  #  312,423 M/sec                  
+         2 771 796      branch-misses             #    0,44% of all branches        
+
+      15,299385525 seconds time elapsed
+
+       1,934180000 seconds user
+       0,056413000 seconds sys
+

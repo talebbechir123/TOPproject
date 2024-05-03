@@ -249,5 +249,5 @@ void comm_handler_ghost_exchange(comm_handler_t const* self, mesh_t* mesh) {
     ghost_exchange_front_back(self, mesh, COMM_KIND_RECV_OP, self->id_back, mesh->dim_z - STENCIL_ORDER);
 
     // Need to synchronize all remaining in-flight communications before exiting
-  // MPI_Syncall(MPI_COMM_WORLD);
+   //MPI_Syncall(MPI_COMM_WORLD);
 }

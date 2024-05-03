@@ -67,16 +67,16 @@ void solve_jacobi_CB(mesh_t* A, mesh_t const* B, mesh_t* C) {
     usz const dim_x = A->dim_x;
     usz const dim_y = A->dim_y;
     usz const dim_z = A->dim_z;
-
+   int block_size = 8;
     // Cache line blocking parameters
-    const int block_size_x = 64; // Number of cells in x-direction per block
-    const int block_size_y = 64; // Number of cells in y-direction per block
-    const int block_size_z = 64; // Number of cells in z-direction per block
+    const int block_size_x = block_size; // Number of cells in x-direction per block
+    const int block_size_y = block_size; // Number of cells in y-direction per block
+    const int block_size_z = block_size; // Number of cells in z-direction per block
 
     // Precompute 1/pow(17.0, (f64)o) for each value of o
     f64 inverse_pow[STENCIL_ORDER];
     for (usz o = 1; o <= STENCIL_ORDER; ++o) {
-        inverse_pow[o - 1] = 1.0 / pow(17.0, (f64)o);
+        inverse_pow[o - 1] = 1.0 / dpow(17.0, (f64)o);
     }
 
     // Main loop with cache line blocking
