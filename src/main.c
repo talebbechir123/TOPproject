@@ -5,8 +5,10 @@
 #include "stencil/init.h"
 #include "stencil/mesh.h"
 #include "stencil/solve.h"
+
 #include <mpi.h>
 #include <stdio.h>
+#include <omp.h>
 
 static char* DEFAULT_CONFIG_PATH = "config.txt";
 static char* DEFAULT_OUTPUT_PATH = NULL;
@@ -140,9 +142,11 @@ i32 main(i32 argc, char* argv[argc + 1]) {
         chrono_start(&chrono);
         // Compute Jacobi C=B@A (one iteration)
         //solve_jacobi(&A, &B, &C);
-       
-       // solve_jacobi_omp(&A, &B, &C);
-        solve_jacobi_CB(&A, &B, &C);
+        //solve_jacobi_CB(&A, &B, &C);
+        omp_set_num_threads(4);
+        //solve_jacobi_omp(&A, &B, &C);
+        //solve_jacobi_CB(&A, &B, &C);
+        solve_jacobi_CB_omp(&A, &B, &C);
 
         // Exchange ghost cells for A and C meshes
         // No need to exchange B as its a constant mesh
