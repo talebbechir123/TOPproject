@@ -5,7 +5,6 @@
 #include "stencil/init.h"
 #include "stencil/mesh.h"
 #include "stencil/solve.h"
-
 #include <mpi.h>
 #include <stdio.h>
 
@@ -141,6 +140,8 @@ i32 main(i32 argc, char* argv[argc + 1]) {
         chrono_start(&chrono);
         // Compute Jacobi C=B@A (one iteration)
         //solve_jacobi(&A, &B, &C);
+       
+       // solve_jacobi_omp(&A, &B, &C);
         solve_jacobi_CB(&A, &B, &C);
 
         // Exchange ghost cells for A and C meshes

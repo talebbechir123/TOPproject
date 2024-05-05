@@ -5,6 +5,7 @@
 
 
 
+
 //fater pow function
 
 double dpow(double base, int exp) {
@@ -207,3 +208,41 @@ void solve_jacobi_CB(mesh_t* A, mesh_t const* B, mesh_t* C) {
 
 
 
+void solve_jacobi_omp(mesh_t* A, mesh_t const* B, mesh_t* C) {
+    assert(A->dim_x == B->dim_x && B->dim_x == C->dim_x);
+    assert(A->dim_y == B->dim_y && B->dim_y == C->dim_y);
+    assert(A->dim_z == B->dim_z && B->dim_z == C->dim_z);
+
+    usz const dim_x = A->dim_x;
+    usz const dim_y = A->dim_y;
+    usz const dim_z = A->dim_z;
+
+    // Precompute 1/pow(17.0, (f64)o) for each value of o
+    f64 inverse_pow[STENCIL_ORDER];
+    for (usz o = 1; o <= STENCIL_ORDER; ++o) {
+        inverse_pow[o - 1] = 1.0 / pow(17.0, (f64)o);
+    }
+
+    // Main loop parallelized with OpenMP
+    #pragma omp parallel for collapse(3) // Collapse nested loops into one for parallelization
+    for (usz k = STENCIL_ORDER; k < dim_z - STENCIL_ORDER; ++k) {
+        for (usz j = STENCIL_ORDER; j < dim_y - STENCIL_ORDER; ++j) {
+            for (usz i = STENCIL_ORDER; i < dim_x - STENCIL_ORDER; ++i) {
+                f64 sum = A->cells.values[i * dim_y * dim_z + j * dim_z + k] * B->cells.values[i * dim_y * dim_z + j * dim_z + k];
+
+                for (usz o = 1; o <= STENCIL_ORDER; ++o) {
+                    sum += (A->cells.values[(i + o) * dim_y * dim_z + j * dim_z + k] * B->cells.values[(i + o) * dim_y * dim_z + j * dim_z + k] +
+                            A->cells.values[(i - o) * dim_y * dim_z + j * dim_z + k] * B->cells.values[(i - o) * dim_y * dim_z + j * dim_z + k] +
+                            A->cells.values[i * dim_y * dim_z + (j + o) * dim_z + k] * B->cells.values[i * dim_y * dim_z + (j + o) * dim_z + k] +
+                            A->cells.values[i * dim_y * dim_z + (j - o) * dim_z + k] * B->cells.values[i * dim_y * dim_z + (j - o) * dim_z + k] +
+                            A->cells.values[i * dim_y * dim_z + j * dim_z + (k + o)] * B->cells.values[i * dim_y * dim_z + j * dim_z + (k + o)] +
+                            A->cells.values[i * dim_y * dim_z + j * dim_z + (k - o)] * B->cells.values[i * dim_y * dim_z + j * dim_z + (k - o)]) * inverse_pow[o - 1];
+                }
+
+                C->cells.values[i * dim_y * dim_z + j * dim_z + k] = sum;
+            }
+        }
+    }
+
+    mesh_copy_core(A, C);
+}

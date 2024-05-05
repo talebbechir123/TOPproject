@@ -1,4 +1,0 @@
-dim_x = 900
-dim_y = 900
-dim_z = 900
-niter = 10

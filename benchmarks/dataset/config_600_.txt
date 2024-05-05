@@ -1,4 +1,0 @@
-dim_x = 600
-dim_y = 600
-dim_z = 600
-niter = 10
